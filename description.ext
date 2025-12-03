@@ -1,0 +1,17 @@
+respawn = 3;               // Respawn at custom position (we override it)
+respawnDelay = 1;
+respawnOnStart = 1;  // Triggers onPlayerRespawn immediately when joining
+
+class CfgFunctions
+{
+    class MyRespawn
+    {
+        class Functions
+        {
+            file = "functions\MyRespawn";
+            class randomRespawn {};  // maps to fn_randomRespawn.sqf
+            class randomLoadout {};  // maps to fn_randomLoadout.sqf
+            class zoneControl {};    // maps to fn_zoneControl.sqf
+        };
+    };
+};
