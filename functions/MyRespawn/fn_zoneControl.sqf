@@ -44,8 +44,9 @@ diag_log format ["ZoneControl: Zone active at %1, radius %2m", _marker, _radius]
 // --- 3D Zone Wall Visualization ---
 // Number of segments (more = smoother circle, but more performance cost)
 private _segments = 48;
-private _wallHeight = 100;  // Height of the wall in meters
+private _wallHeight = 200;  // Height of the wall in meters
 private _wallColor = [0, 0.6, 1, 0.8];  // Bright blue [R,G,B,A]
+private _wallOffset = -30;  // Lower the wall well below ground to ensure it touches terrain on hills
 
 // Pre-calculate wall points for performance
 private _wallPoints = [];
@@ -53,43 +54,49 @@ for "_i" from 0 to _segments do {
     private _angle = (_i / _segments) * 360;
     private _x = (_centerPos select 0) + (_radius * sin _angle);
     private _y = (_centerPos select 1) + (_radius * cos _angle);
-    private _z = getTerrainHeightASL [_x, _y];
+    private _z = (getTerrainHeightASL [_x, _y]) + _wallOffset;
     _wallPoints pushBack [_x, _y, _z];
 };
 
+// Store wall data in global variables for the event handler
+ZONE_wallPoints = _wallPoints;
+ZONE_wallHeight = _wallHeight;
+ZONE_wallColor = _wallColor;
+ZONE_segments = _segments;
+
 // Add 3D drawing event handler (runs every frame)
 addMissionEventHandler ["Draw3D", {
-    (_this select 0) params ["_wallPoints", "_wallHeight", "_wallColor", "_segments"];
+    if (isNil "ZONE_wallPoints") exitWith {};
     
     // Draw wall segments
-    for "_i" from 0 to (_segments - 1) do {
-        private _p1 = _wallPoints select _i;
-        private _p2 = _wallPoints select (_i + 1);
+    for "_i" from 0 to (ZONE_segments - 1) do {
+        private _p1 = ZONE_wallPoints select _i;
+        private _p2 = ZONE_wallPoints select (_i + 1);
         
         // Bottom points (at ground level)
         private _bottom1 = [_p1 select 0, _p1 select 1, _p1 select 2];
         private _bottom2 = [_p2 select 0, _p2 select 1, _p2 select 2];
         
         // Top points
-        private _top1 = [_p1 select 0, _p1 select 1, (_p1 select 2) + _wallHeight];
-        private _top2 = [_p2 select 0, _p2 select 1, (_p2 select 2) + _wallHeight];
+        private _top1 = [_p1 select 0, _p1 select 1, (_p1 select 2) + ZONE_wallHeight];
+        private _top2 = [_p2 select 0, _p2 select 1, (_p2 select 2) + ZONE_wallHeight];
         
         // Draw vertical lines (pillars)
-        drawLine3D [_bottom1, _top1, _wallColor];
+        drawLine3D [_bottom1, _top1, ZONE_wallColor];
         
         // Draw horizontal lines at different heights
-        drawLine3D [_bottom1, _bottom2, _wallColor];
-        drawLine3D [_top1, _top2, _wallColor];
+        drawLine3D [_bottom1, _bottom2, ZONE_wallColor];
+        drawLine3D [_top1, _top2, ZONE_wallColor];
         
         // Middle lines for grid effect
-        private _mid1 = [_p1 select 0, _p1 select 1, (_p1 select 2) + (_wallHeight * 0.33)];
-        private _mid2 = [_p2 select 0, _p2 select 1, (_p2 select 2) + (_wallHeight * 0.33)];
-        private _mid3 = [_p1 select 0, _p1 select 1, (_p1 select 2) + (_wallHeight * 0.66)];
-        private _mid4 = [_p2 select 0, _p2 select 1, (_p2 select 2) + (_wallHeight * 0.66)];
-        drawLine3D [_mid1, _mid2, _wallColor];
-        drawLine3D [_mid3, _mid4, _wallColor];
+        private _mid1 = [_p1 select 0, _p1 select 1, (_p1 select 2) + (ZONE_wallHeight * 0.33)];
+        private _mid2 = [_p2 select 0, _p2 select 1, (_p2 select 2) + (ZONE_wallHeight * 0.33)];
+        private _mid3 = [_p1 select 0, _p1 select 1, (_p1 select 2) + (ZONE_wallHeight * 0.66)];
+        private _mid4 = [_p2 select 0, _p2 select 1, (_p2 select 2) + (ZONE_wallHeight * 0.66)];
+        drawLine3D [_mid1, _mid2, ZONE_wallColor];
+        drawLine3D [_mid3, _mid4, ZONE_wallColor];
     };
-}, [[_wallPoints, _wallHeight, _wallColor, _segments]]];
+}];
 
 // Zone check loop
 private _outsideTimer = 0;
