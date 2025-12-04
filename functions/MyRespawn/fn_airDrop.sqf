@@ -9,8 +9,13 @@
 
 params [
     ["_marker", "respawnPoint_1"],
-    ["_radius", 85]
+    ["_radius", -1]  // -1 means use getZoneRadius
 ];
+
+// If no radius provided, get from central function
+if (_radius == -1) then {
+    _radius = [_marker] call MyRespawn_fnc_getZoneRadius;
+};
 
 // Only run on server
 if (!isServer) exitWith {};

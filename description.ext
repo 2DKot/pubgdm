@@ -9,6 +9,7 @@ class CfgFunctions
         class Functions
         {
             file = "functions\MyRespawn";
+            class getZoneRadius {};  // maps to fn_getZoneRadius.sqf
             class randomRespawn {};  // maps to fn_randomRespawn.sqf
             class randomLoadout {};  // maps to fn_randomLoadout.sqf
             class zoneControl {};    // maps to fn_zoneControl.sqf

@@ -4,10 +4,18 @@
     
     Parameters:
         _centerRef - marker name (string) or object
-        _radius    - spawn radius in meters
+        _radius    - spawn radius in meters (-1 to use getZoneRadius)
 */
 
-params ["_centerRef", "_radius"];
+params [
+    "_centerRef",
+    ["_radius", -1]  // -1 means use getZoneRadius
+];
+
+// If no radius provided, get from central function
+if (_radius == -1) then {
+    _radius = [_centerRef] call MyRespawn_fnc_getZoneRadius;
+};
 
 private _player = player;
 

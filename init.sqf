@@ -72,14 +72,19 @@ addMissionEventHandler ["EntityKilled", {
 
 diag_log format ["Deathmatch scoring system initialized - first to %1 kills wins!", DM_killsToWin];
 
+// Get zone radius from marker
+private _marker = "respawnPoint_1";
+private _radius = [_marker] call MyRespawn_fnc_getZoneRadius;
+
+diag_log format ["Zone radius from marker: %1m", _radius];
+
 // Start zone control system
 // Parameters: [marker, radius, damage per tick, tick interval, warning seconds]
-["respawnPoint_1", 85, 0.05, 1, 5] spawn MyRespawn_fnc_zoneControl;
+[_marker, _radius, 0.05, 1, 5] spawn MyRespawn_fnc_zoneControl;
 
 // Start air drop system (periodic drops)
-[] spawn {
-    private _marker = "respawnPoint_1";
-    private _radius = 85;  // Same as zone radius
+[_marker, _radius] spawn {
+    params ["_marker", "_radius"];
     private _dropInterval = 180;  // Seconds between drops (3 minutes)
     private _initialDelay = 5;    // First drop after 5 seconds (for testing)
     
