@@ -91,6 +91,30 @@ private _vestPool = [
     "V_PlateCarrierGL_rgr"
 ];
 
+// Helmet pool (base game - armor only)
+private _helmetPool = [
+    "H_HelmetB",
+    "H_HelmetB_light",
+    "H_HelmetB_plain_mcamo",
+    "H_HelmetSpecB",
+    "H_HelmetSpecB_paint1",
+    "H_HelmetIA",
+    "H_HelmetLeaderO_ocamo"
+];
+
+// Backpack pool (base game)
+private _backpackPool = [
+    "B_AssaultPack_khk",
+    "B_AssaultPack_rgr",
+    "B_AssaultPack_mcamo",
+    "B_Kitbag_mcamo",
+    "B_Kitbag_rgr",
+    "B_FieldPack_khk",
+    "B_FieldPack_ocamo",
+    "B_Carryall_ocamo",
+    "B_Carryall_khk"
+];
+
 // Add 2-3 random weapons with ammo
 private _numWeapons = 2 + floor random 2;
 for "_i" from 1 to _numWeapons do {
@@ -127,6 +151,12 @@ if (random 1 < 1) then {
     private _ghillie = selectRandom ["U_B_GhillieSuit", "U_O_GhillieSuit", "U_I_GhillieSuit"];
     _crate addItemCargoGlobal [_ghillie, 1];
 };
+
+// Add one random helmet
+_crate addItemCargoGlobal [selectRandom _helmetPool, 1];
+
+// Add one random backpack
+_crate addBackpackCargoGlobal [selectRandom _backpackPool, 1];
 
 // --- Create map marker for drop location ---
 private _markerName = format ["airdrop_%1", floor time];
