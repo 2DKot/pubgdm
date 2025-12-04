@@ -88,10 +88,7 @@ _player addWeapon _weapon;
 
 // --- Random scope ---
 // "" = no scope (iron sights), gives ~30% chance of no optic
-private _scopePool = [
-    "",  // no scope
-    "",  // no scope (extra weight for iron sights)
-    
+private _scopePool = [    
     // Red dots (base game)
     "optic_Aco",
     "optic_ACO_grn",
@@ -112,16 +109,15 @@ private _scopePool = [
     "optic_DMS"
 ];
 
-private _scope = selectRandom _scopePool;
-if (_scope != "") then {
-    _player addPrimaryWeaponItem _scope;
+// 30% chance to add a scope
+private _scope = "";
+if (random 1 < 0.3) then {
+    _scope = selectRandom _scopePool;
+    if (_scope != "") then {
+        _player addPrimaryWeaponItem _scope;
+    };
 };
-
-// Add a pistol as sidearm
-_player addMagazines ["16Rnd_9x21_Mag", 2];
-_player addWeapon "hgun_P07_F";
 
 // Logging
 private _scopeName = if (_scope == "") then { "iron sights" } else { _scope };
 diag_log format ["RandomLoadout: Gave %1 weapon %2 with %3x %4, scope: %5", name _player, _weapon, _magCount, _magazine, _scopeName];
-

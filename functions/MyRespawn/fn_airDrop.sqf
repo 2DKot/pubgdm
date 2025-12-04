@@ -115,8 +115,8 @@ private _backpackPool = [
     "B_Carryall_khk"
 ];
 
-// Add 2-3 random weapons with ammo
-private _numWeapons = 2 + floor random 2;
+// Add 1-2 random weapons with ammo
+private _numWeapons = 1 + floor random 2;
 for "_i" from 1 to _numWeapons do {
     private _weapon = selectRandom _weaponPool;
     _crate addWeaponCargoGlobal [_weapon select 0, 1];
@@ -136,27 +136,33 @@ for "_i" from 1 to _numItems do {
 };
 
 // Add some extra ammo variety
-_crate addMagazineCargoGlobal ["30Rnd_65x39_caseless_mag", 3];
-_crate addMagazineCargoGlobal ["30Rnd_556x45_Stanag", 3];
-_crate addMagazineCargoGlobal ["20Rnd_762x51_Mag", 2];
+private _extraAmmo = selectRandom ["30Rnd_65x39_caseless_mag", "30Rnd_556x45_Stanag", "20Rnd_762x51_Mag"];
+_crate addMagazineCargoGlobal [_extraAmmo, 3];
+
+// Add grenades
+_crate addMagazineCargoGlobal ["HandGrenade", 2];
+_crate addMagazineCargoGlobal ["SmokeShell", 2];
 
 // 70% chance to add a random vest
-if (random 1 < 0.7) then {
+if (random 1 < 0.5) then {
     private _vest = selectRandom _vestPool;
     _crate addItemCargoGlobal [_vest, 1];
 };
 
-// 30% chance for a rare Ghillie suit (base game)
-if (random 1 < 1) then {
-    private _ghillie = selectRandom ["U_B_GhillieSuit", "U_O_GhillieSuit", "U_I_GhillieSuit"];
-    _crate addItemCargoGlobal [_ghillie, 1];
+// 30% chance for a rare Ghillie suit (NATO only)
+if (random 1 < 0.2) then {
+    _crate addItemCargoGlobal ["U_B_GhillieSuit", 1];
 };
 
 // Add one random helmet
-_crate addItemCargoGlobal [selectRandom _helmetPool, 1];
+if (random 1 < 0.7) then {
+    _crate addItemCargoGlobal [selectRandom _helmetPool, 1];
+}
 
 // Add one random backpack
-_crate addBackpackCargoGlobal [selectRandom _backpackPool, 1];
+if (random 1 < 0.7) then {
+    _crate addBackpackCargoGlobal [selectRandom _backpackPool, 1];
+}
 
 // --- Create map marker for drop location ---
 private _markerName = format ["airdrop_%1", floor time];
