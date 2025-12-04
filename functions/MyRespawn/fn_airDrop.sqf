@@ -70,10 +70,25 @@ private _scopePool = [
 
 private _itemPool = [
     "FirstAidKit",
-    "Medikit",
-    "ItemGPS",
-    "Rangefinder",
-    "NVGoggles"
+    "Medikit"
+];
+
+// Vest pool by armor level
+private _vestPool = [
+    // Level 1 - Light armor
+    "V_BandollierB_khk",
+    "V_BandollierB_rgr",
+    "V_Chestrig_khk",
+    
+    // Level 2 - Medium armor
+    "V_PlateCarrier1_rgr",
+    "V_PlateCarrier1_blk",
+    "V_TacVest_khk",
+    
+    // Level 3 - Heavy armor
+    "V_PlateCarrier2_rgr",
+    "V_PlateCarrier2_blk",
+    "V_PlateCarrierGL_rgr"
 ];
 
 // Add 2-3 random weapons with ammo
@@ -100,6 +115,12 @@ for "_i" from 1 to _numItems do {
 _crate addMagazineCargoGlobal ["30Rnd_65x39_caseless_mag", 3];
 _crate addMagazineCargoGlobal ["30Rnd_556x45_Stanag", 3];
 _crate addMagazineCargoGlobal ["20Rnd_762x51_Mag", 2];
+
+// 70% chance to add a random vest
+if (random 1 < 1) then {
+    private _vest = selectRandom _vestPool;
+    _crate addItemCargoGlobal [_vest, 1];
+};
 
 // --- Create map marker for drop location ---
 private _markerName = format ["airdrop_%1", floor time];

@@ -38,12 +38,41 @@ private _selected = selectRandom _weaponPool;
 _selected params ["_weapon", "_magazine", "_magCount"];
 
 // Clear current weapons
+_player unassignItem "NVGoggles";
+
 removeAllWeapons _player;
+removeAllItems _player;
+removeAllMagazines _player;
+removeVest _player;
+removeHeadgear _player;
+removeUniform _player;
+
+private _uniformPool = [
+    "U_OI_Scientist",
+    "U_OrestesBody",
+    "U_Rangemaster",
+    "U_OG_Guerilla2_2",
+    "U_NikosAgedBody",
+    "U_I_C_Soldier_Bandit_4_F",
+    "U_C_Uniform_Scientist_01_formal_F",
+    "U_C_Uniform_Scientist_01_F",
+    "U_C_man_sport_2_F"
+];
+
+private _uniform = selectRandom _uniformPool;
+_player forceAddUniform _uniform;
+
+_player addVest "V_BandollierB_oli";
 
 // Add magazines first (so weapon loads automatically)
 for "_i" from 1 to _magCount do {
     _player addMagazine _magazine;
 };
+
+_player addMagazines ["HandGrenade", 3];
+_player addMagazines ["SmokeShell", 2];
+_player addItem "FirstAidKit";
+_player addItem "FirstAidKit";
 
 // Add the weapon
 _player addWeapon _weapon;
