@@ -157,12 +157,12 @@ if (random 1 < 0.2) then {
 // Add one random helmet
 if (random 1 < 0.7) then {
     _crate addItemCargoGlobal [selectRandom _helmetPool, 1];
-}
+};
 
 // Add one random backpack
 if (random 1 < 0.7) then {
     _crate addBackpackCargoGlobal [selectRandom _backpackPool, 1];
-}
+};
 
 // --- Create map marker for drop location ---
 private _markerName = format ["airdrop_%1", floor time];
