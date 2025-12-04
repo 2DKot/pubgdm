@@ -48,15 +48,24 @@ removeHeadgear _player;
 removeUniform _player;
 
 private _uniformPool = [
-    "U_OI_Scientist",
-    "U_OrestesBody",
+    // Base game civilian uniforms
+    "U_C_Poloshirt_blue",
+    "U_C_Poloshirt_burgundy",
+    "U_C_Poloshirt_stripped",
+    "U_C_Poloshirt_salmon",
+    "U_C_Poor_1",
+    "U_C_Poor_2",
+    "U_C_WorkerCoveralls",
+    "U_C_Journalist",
+    "U_C_Scientist",
     "U_Rangemaster",
+    // Base game guerrilla uniforms
+    "U_OG_Guerilla1_1",
+    "U_OG_Guerilla2_1",
     "U_OG_Guerilla2_2",
-    "U_NikosAgedBody",
-    "U_I_C_Soldier_Bandit_4_F",
-    "U_C_Uniform_Scientist_01_formal_F",
-    "U_C_Uniform_Scientist_01_F",
-    "U_C_man_sport_2_F"
+    "U_OG_Guerilla2_3",
+    "U_OG_Guerilla3_1",
+    "U_OG_leader"
 ];
 
 private _uniform = selectRandom _uniformPool;

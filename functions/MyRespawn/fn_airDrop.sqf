@@ -74,12 +74,7 @@ private _itemPool = [
 ];
 
 // Vest pool by armor level
-private _vestPool = [
-    // Level 1 - Light armor
-    "V_BandollierB_khk",
-    "V_BandollierB_rgr",
-    "V_Chestrig_khk",
-    
+private _vestPool = [    
     // Level 2 - Medium armor
     "V_PlateCarrier1_rgr",
     "V_PlateCarrier1_blk",
@@ -117,9 +112,15 @@ _crate addMagazineCargoGlobal ["30Rnd_556x45_Stanag", 3];
 _crate addMagazineCargoGlobal ["20Rnd_762x51_Mag", 2];
 
 // 70% chance to add a random vest
-if (random 1 < 1) then {
+if (random 1 < 0.7) then {
     private _vest = selectRandom _vestPool;
     _crate addItemCargoGlobal [_vest, 1];
+};
+
+// 30% chance for a rare Ghillie suit (base game)
+if (random 1 < 1) then {
+    private _ghillie = selectRandom ["U_B_GhillieSuit", "U_O_GhillieSuit", "U_I_GhillieSuit"];
+    _crate addItemCargoGlobal [_ghillie, 1];
 };
 
 // --- Create map marker for drop location ---
