@@ -58,10 +58,10 @@ addMissionEventHandler ["EntityKilled", {
                 
                 // Announce winner to all players
                 private _winnerName = name _actualKiller;
-                private _msg = format ["%1 WINS with %2 kills!", _winnerName, _infantryKills];
+                private _msg = format ["%1 WINS with %2 kills!", _winnerName, _infantryKills - 1];
                 [_msg] remoteExec ["hint", 0];
                 
-                diag_log format ["Deathmatch: %1 won with %2 kills!", _winnerName, _infantryKills];
+                diag_log format ["Deathmatch: %1 won with %2 kills!", _winnerName, _infantryKills - 1];
                 
                 // End mission immediately
                 "END1" call BIS_fnc_endMission;
