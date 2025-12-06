@@ -6,5 +6,5 @@
 private _markerName = "respawnPoint_1";
 private _radius = [_markerName] call MyRespawn_fnc_getZoneRadius;
 
-//[_markerName, _radius] call MyRespawn_fnc_randomRespawn;
+[_markerName, _radius] call MyRespawn_fnc_randomRespawn;
 call MyRespawn_fnc_randomLoadout;

@@ -29,8 +29,8 @@ private _weaponPool = [
     ["srifle_DMR_01_F", "10Rnd_762x54_Mag", 5],
     
     // LMG (base game)
-    ["LMG_Mk200_F", "200Rnd_65x39_cased_Box", 2],
-    ["LMG_Zafir_F", "150Rnd_762x54_Box", 2]
+    ["LMG_Mk200_F", "200Rnd_65x39_cased_Box", 1],
+    ["LMG_Zafir_F", "150Rnd_762x54_Box", 1]
 ];
 
 // Select random weapon
@@ -85,6 +85,9 @@ _player addItem "FirstAidKit";
 
 // Add the weapon
 _player addWeapon _weapon;
+
+// Add flashlight to weapon
+_player addPrimaryWeaponItem "acc_flashlight";
 
 // --- Random scope ---
 // "" = no scope (iron sights), gives ~30% chance of no optic

@@ -49,9 +49,9 @@ diag_log format ["ZoneControl: Zone active at %1, radius %2m", _marker, _radius]
 // --- 3D Zone Wall Visualization ---
 // Number of segments (more = smoother circle, but more performance cost)
 private _segments = 48;
-private _wallHeight = 200;  // Height of the wall in meters
+private _wallHeight = 600;  // Height of the wall in meters
 private _wallColor = [0, 0.6, 1, 0.8];  // Bright blue [R,G,B,A]
-private _wallOffset = -30;  // Lower the wall well below ground to ensure it touches terrain on hills
+private _wallOffset = -300;  // Lower the wall well below ground to ensure it touches terrain on hills
 
 // Pre-calculate wall points for performance
 private _wallPoints = [];
