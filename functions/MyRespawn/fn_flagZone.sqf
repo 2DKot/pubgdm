@@ -28,6 +28,23 @@ if (isServer) then {
     DM_flag = _flag;
     DM_flagRadius = _radius;
     
+    // Spawn sandbag barricades around flag (6 walls, every 60 degrees, at half radius)
+    private _barrierCount = 6;
+    private _barrierDistance = _radius * 0.5;  // Half radius from flag
+    for "_i" from 0 to (_barrierCount - 1) do {
+        private _angle = (_i / _barrierCount) * 360;
+        private _barrierX = (_flagPos select 0) + (sin _angle) * _barrierDistance;
+        private _barrierY = (_flagPos select 1) + (cos _angle) * _barrierDistance;
+        private _barrierPos = [_barrierX, _barrierY, 0];
+        
+        // Create sandbag wall facing outward
+        private _barrier = "Land_BagFence_Round_F" createVehicle _barrierPos;
+        _barrier setPosATL _barrierPos;
+        _barrier setDir (_angle + 180);  // Face outward from center
+    };
+    
+    diag_log format ["FlagZone: Spawned %1 sandbag barricades", _barrierCount];
+    
     // Spawn road cones around the perimeter (12 cones, every 30 degrees)
     private _coneCount = 12;
     for "_i" from 0 to (_coneCount - 1) do {
@@ -80,7 +97,7 @@ if (isServer) then {
     };
 };
 
-// --- Client: 3D visualization (multiple rings) ---
+// --- Client: 3D visualization (multiple rings) + edge-of-screen indicator ---
 if (hasInterface) then {
     [] spawn {
         // Wait for flag data from server
@@ -119,9 +136,24 @@ if (hasInterface) then {
                     drawLine3D [[_x1, _y1, _z1], [_x2, _y2, _z2], _color];
                 };
             } forEach _rings;
+            
+            // --- 3D icon above flag with distance ---
+            private _flagWorldPos = _flagPos vectorAdd [0, 0, 5];  // 5m above ground
+            private _dist = player distance _flagPos;
+            private _distText = format ["%1m", round _dist];
+            
+            drawIcon3D [
+                "\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_secure_ca.paa",
+                [1, 0.8, 0, 1],  // Yellow
+                _flagWorldPos,
+                1.5, 1.5, 0,
+                _distText,
+                2, 0.04,
+                "PuristaMedium"
+            ];
         }];
         
-        diag_log "FlagZone: 3D visualization started (3 rings)";
+        diag_log "FlagZone: 3D visualization started";
     };
 };
 
