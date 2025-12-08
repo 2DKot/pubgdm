@@ -34,8 +34,7 @@ private _dropHeight = 100;
 private _dropPos = [_dropX, _dropY, _groundZ + _dropHeight];
 
 // --- Announce the drop ---
-["Supply drop incoming!"] remoteExec ["hint", 0];
-playSound3D ["A3\Sounds_F\sfx\alarm_independent.wss", objNull, false, _dropPos, 5, 1, 1000];
+"Supply drop incoming!" remoteExec ["systemChat", 0];
 
 // --- Create the supply crate ---
 private _crate = createVehicle ["B_CargoNet_01_ammo_F", _dropPos, [], 0, "CAN_COLLIDE"];
@@ -164,16 +163,9 @@ if (random 1 < 0.7) then {
     _crate addBackpackCargoGlobal [selectRandom _backpackPool, 1];
 };
 
-// --- Create map marker for drop location ---
-private _markerName = format ["airdrop_%1", floor time];
-private _dropMarker = createMarker [_markerName, [_dropX, _dropY]];
-_dropMarker setMarkerType "mil_box";
-_dropMarker setMarkerColor "ColorOrange";
-_dropMarker setMarkerText "Supply Drop";
-
 // --- Monitor landing and add smoke ---
-[_crate, _parachute, _markerName, [_dropX, _dropY]] spawn {
-    params ["_crate", "_parachute", "_markerName", "_pos2D"];
+[_crate, _parachute, [_dropX, _dropY]] spawn {
+    params ["_crate", "_parachute", "_pos2D"];
     
     // Wait for crate to land (check if near ground or parachute gone)
     waitUntil {
@@ -194,13 +186,9 @@ _dropMarker setMarkerText "Supply Drop";
         private _smoke = createVehicle ["SmokeShellGreen", _finalPos, [], 0, "CAN_COLLIDE"];
         
         // Announce landing
-        ["Supply drop has landed!"] remoteExec ["hint", 0];
+        "Supply drop has landed!" remoteExec ["systemChat", 0];
         
         diag_log format ["AirDrop: Crate landed at %1", _finalPos];
-        
-        // Remove marker after 3 minutes
-        sleep 180;
-        deleteMarker _markerName;
     };
 };
 
