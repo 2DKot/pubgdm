@@ -39,12 +39,11 @@ if (isServer) then {
 };
 
 // Start flag zone system (runs on both server and client)
-// Parameters: [marker, radius, tickInterval, pointsPerTick]
-["respawnPoint_1", 10, 20, 1] call MyRespawn_fnc_flagZone;
+[] call MyRespawn_fnc_flagZone;
 
 // End mission after timer
 [] spawn {
-    sleep 120;  // 1 minute for testing
+    sleep 60;  // 1 minute for testing
     
     if (isServer) then {
         // Sort scores descending

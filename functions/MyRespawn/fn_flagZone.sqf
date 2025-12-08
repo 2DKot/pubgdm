@@ -3,23 +3,15 @@
     Spawns a flag at random position within zone and awards points to players in capture zone.
     Flag moves to new random location every _moveInterval seconds.
     
-    Parameters:
-        _marker        - Marker name for zone center (string)
-        _radius        - Capture zone radius in meters (number, default 10)
-        _tickInterval  - Seconds between point awards (number, default 20)
-        _pointsPerTick - Points awarded per tick (number, default 1)
-        _moveInterval  - Seconds between flag relocations (number, default 300 = 5 min)
-    
-    Call from init.sqf (server only for scoring, client for visuals)
+    Call from init.sqf: [] call MyRespawn_fnc_flagZone;
 */
 
-params [
-    ["_marker", "respawnPoint_1"],
-    ["_radius", 10],
-    ["_tickInterval", 2],
-    ["_pointsPerTick", 1],
-    ["_moveInterval", 30]  // 5 minutes
-];
+// === CONFIGURATION ===
+private _marker = "respawnPoint_1";  // Zone center marker
+private _radius = 10;                 // Capture zone radius in meters
+private _tickInterval = 2;            // Seconds between point awards
+private _pointsPerTick = 1;           // Points awarded per tick
+private _moveInterval = 15;           // Seconds between flag relocations (1 minute)
 
 private _zoneCenter = getMarkerPos _marker;
 private _zoneRadius = [_marker] call MyRespawn_fnc_getZoneRadius;
@@ -114,11 +106,28 @@ if (isServer) then {
     [_zoneCenter, _zoneRadius, _radius, _moveInterval] spawn {
         params ["_zoneCenter", "_zoneRadius", "_flagRadius", "_moveInterval"];
         
+        private _minMoveDistance = 20;  // Minimum distance from old position
+        
         while {true} do {
             sleep _moveInterval;
             
-            // Get new random position
-            private _newPos = [_zoneCenter, _zoneRadius] call DM_fnc_getRandomFlagPos;
+            // Get current flag position
+            private _oldPos = if (!isNil "DM_flag" && !isNull DM_flag) then {
+                getPosATL DM_flag
+            } else {
+                _zoneCenter
+            };
+            
+            // Find new position at least _minMoveDistance away from old one
+            private _newPos = [0, 0, 0];
+            private _attempts = 0;
+            private _maxAttempts = 50;
+            
+            while {_attempts < _maxAttempts} do {
+                _newPos = [_zoneCenter, _zoneRadius] call DM_fnc_getRandomFlagPos;
+                if (_newPos distance2D _oldPos >= _minMoveDistance) exitWith {};
+                _attempts = _attempts + 1;
+            };
             
             // Announce relocation
             "Flag zone is moving!" remoteExec ["systemChat", 0];
@@ -126,7 +135,10 @@ if (isServer) then {
             // Respawn at new location
             [_newPos, _flagRadius] call DM_fnc_spawnFlagZone;
             
-            diag_log format ["FlagZone: Relocated to %1", _newPos];
+            // Play notification sound at new flag position for all players
+            [_newPos, "A3\Sounds_F\sfx\UI\notifications\notification_default.wss", 1500, 1, 1, 0] remoteExec ["playSound3D", 0];
+            
+            diag_log format ["FlagZone: Relocated to %1 (distance from old: %2m)", _newPos, round (_newPos distance2D _oldPos)];
         };
     };
     
@@ -216,13 +228,15 @@ if (hasInterface) then {
             private _distText = format ["%1m", round _dist];
             
             drawIcon3D [
-                "\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_secure_ca.paa",
+                "\A3\ui_f\data\map\markers\handdrawn\objective_CA.paa",
                 [1, 0.8, 0, 1],
                 _flagWorldPos,
                 1.5, 1.5, 0,
                 _distText,
                 2, 0.04,
-                "PuristaMedium"
+                "PuristaMedium",
+                "center",
+                true
             ];
         }];
         
