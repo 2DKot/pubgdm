@@ -140,17 +140,34 @@ if (isServer) then {
             if (isNil "DM_flag" || isNull DM_flag) then { continue; };
             
             private _flagPos = getPosATL DM_flag;
+            private _someoneScored = false;
+            
             {
                 if (isPlayer _x && alive _x) then {
                     private _dist = _x distance _flagPos;
                     if (_dist <= DM_flagRadius) then {
                         [_x, _pointsPerTick] call DM_fnc_addPoints;
-                        
-                        private _msg = format ["%1 +%2 pt (flag zone)", name _x, _pointsPerTick];
-                        [_msg] remoteExec ["hint", 0];
+                        _someoneScored = true;
                     };
                 };
             } forEach allPlayers;
+            
+            // Build and show scoreboard hint to all players
+            if (_someoneScored && count DM_scores > 0) then {
+                // Sort scores descending
+                private _sorted = +DM_scores;
+                _sorted sort false;  // Sort by first comparable element (we need custom sort)
+                _sorted = [_sorted, [], {_x select 2}, "DESCEND"] call BIS_fnc_sortBy;
+                
+                // Build scoreboard text
+                private _text = "=== SCOREBOARD ===\n";
+                {
+                    _x params ["_uid", "_name", "_score"];
+                    _text = _text + format ["%1: %2 pts\n", _name, _score];
+                } forEach _sorted;
+                
+                [_text] remoteExec ["hint", 0];
+            };
         };
     };
 };
