@@ -14,6 +14,7 @@ class CfgFunctions
             class randomLoadout {};  // maps to fn_randomLoadout.sqf
             class zoneControl {};    // maps to fn_zoneControl.sqf
             class airDrop {};        // maps to fn_airDrop.sqf
+            class flagZone {};       // maps to fn_flagZone.sqf
         };
     };
 };
